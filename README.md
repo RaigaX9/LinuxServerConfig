@@ -90,7 +90,7 @@ the following below:
 32. In `databasesetup.py`, `insertdata.py`, and `project.py`,
 change sqllite database information to `postgresql+psycopg2://grader:aaa@localhost:5432/catalog`
 33. Then change the Google Authentication to `http://ec2-35-164-164-97.us-west-2.compute.amazonaws.com/`
-in both Authorized Javascript Origins and Authorized redirect URIs.
+in both Authorized Javascript Origins and Authorized redirect URIs as well as in `client_secrets.json` in the project folder.
 34. Last, do `sudo service apache2 restart ` and the application will be LIVE!
 
 ## Live Flask Application
