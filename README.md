@@ -31,9 +31,9 @@ For mine, I did everything "aaa" when filling out the information.
 10. When filling out the keygen, enter the path for where it will be generated.
 So it will be somewhere in `C:\Users\<name>\.ssh` and using that path. Passphrase should be blank.
 11. After that, go to id_rsa.pub and copy that key.
-12. Go back to your other terminal and do `nano /home/grader/.ssh/authorized_keys`
+12. Go back to your other terminal and do `sudo nano /home/grader/.ssh/authorized_keys`
 and paste that key you've copied in there.
-13. Do `chmod 644 .ssh/authorized_keys`
+13. Do `chmod 777 .ssh` and `chmod 644 .ssh/authorized_keys`
 14. Now, we can log into as grader which can be done by doing `su - grader`
 15. After logging in as grader, install the following:
     
@@ -51,51 +51,54 @@ and paste that key you've copied in there.
     - `sudo apt-get install git`
 16. Do `sudo -u postgres -i` to switch to postgres
 17. Do `psql`
-18. Run `CREATE USER grader WITH PASSWORD 'aaa';`
+18. Run `CREATE USER grader WITH PASSWORD 'aaa';` and `CREATE DATABASE catalog;`
 19. Run `GRANT ALL PRIVILEGES ON DATABASE "catalog" to grader;`
 20. Now to get out psql, do `\q`.
 21. To get out of postgres, do `exit`
 22. Now to change the ports and for that we will go to `sudo nano /etc/ssh/sshd_config`
 23. Change `Port 22` to `Port 2200`
-24. Change `PermitLogin without-password` to `PermitLoging no`
-25. Restart the server by doing `sudo service ssh restart`
-26. Next, to configure the firewall, do the following:
+24. Change `PasswordAuthentication no` to `PasswordAuthentication yes`
+25. Change `PermitRootLogin withoutpassword` to `PermitRootLogin yes`
+26. Add at the very bottom `AllowUsers grader`
+27. Restart the server by doing `sudo service ssh restart`. Test the login by logging out to vagrant and
+ do`ssh -i ~/.ssh/udacity_key.rsa grader@35.164.155.226 -p 2200`
+28. Next, to configure the firewall, do the following:
     - `sudo ufw default deny incoming`
     - `sudo ufw default allow outgoing`
     - `sudo ufw allow 2200/tcp`
     - `sudo ufw allow www` (for 80)
     - `sudo ufw allow ntp` (for 123)
     - `sudo ufw deny 22` (to not allow 22)
-27. After that, do `sudo ufw enable` to start up the firewall. To check
+29. After that, do `sudo ufw enable` to start up the firewall. To check
 if everything is alright, do `sudo ufw status`.
-28. To change the timezone, do `sudo dpkg-reconfigure tzdata` and select
+30. To change the timezone, do `sudo dpkg-reconfigure tzdata` and select
 `None of the Above` and `UTC`
-29. To configure Apache, do `sudo nano /etc/apache2/sites-enabled/000-default.conf` and
+31. To configure Apache, do `sudo nano /etc/apache2/sites-enabled/000-default.conf` and
 fill in the following inside VirtualHost:
 
-        ServerName 35.164.164.97
+        ServerName 35.164.155.226
         ServerAdmin webmaster@localhost
-        ServerAlias ec2-35-164-164-97.us-west-2.compute.amazonaws.com
+        ServerAlias ec2-35-164-155-226.us-west-2.compute.amazonaws.com
         DocumentRoot /var/www/html/ItemCatalog/vagrant/templates/
         WSGIScriptAlias / /var/www/html/catalog.wsgi
-30. Next, do `sudo nano /var/www/html/catalog.wsgi` and fill
+32. Next, do `sudo nano /var/www/html/catalog.wsgi` and fill
 the following below:
 
         import sys
         sys.path.insert(0, '/var/www/html/ItemCatalog/vagrant/')
         from project import app as application
         application.secret_key = 'falcon pawnch'
-31. Do `cd /var/www/html` and git clone the project: 
+33. Do `cd /var/www/html` and git clone the project: 
 `sudo git clone https://github.com/ZetaX9/ItemCatalog.git`
-32. In `databasesetup.py`, `insertdata.py`, and `project.py`,
+34. In `databasesetup.py`, `insertdata.py`, and `project.py`,
 change sqllite database information to `postgresql+psycopg2://grader:aaa@localhost:5432/catalog`
-33. Then change the Google Authentication to `http://ec2-35-164-164-97.us-west-2.compute.amazonaws.com/`
+35. Then change the Google Authentication to `http://ec2-35-164-155-226.us-west-2.compute.amazonaws.com/`
 in both Authorized Javascript Origins and Authorized redirect URIs.
-34. Last, do `sudo service apache2 restart ` and the application will be LIVE!
+36. Last, do `sudo service apache2 restart ` and the application will be LIVE!
 
 ## Live Flask Application
 
-[http://ec2-35-164-164-97.us-west-2.compute.amazonaws.com/](http://ec2-35-164-164-97.us-west-2.compute.amazonaws.com/)
+[http://ec2-35-164-155-226.us-west-2.compute.amazonaws.com/](http://ec2-35-164-155-226.us-west-2.compute.amazonaws.com/)
 
 ## References
 
