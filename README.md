@@ -92,9 +92,10 @@ the following below:
 `sudo git clone https://github.com/ZetaX9/ItemCatalog.git`
 34. In `databasesetup.py`, `insertdata.py`, and `project.py`,
 change sqllite database information to `postgresql+psycopg2://grader:aaa@localhost:5432/catalog`
-35. Then change the Google Authentication to `http://ec2-35-164-155-226.us-west-2.compute.amazonaws.com/`
+35. Comment out the main function in `project.py`
+36. Then change the Google Authentication to `http://ec2-35-164-155-226.us-west-2.compute.amazonaws.com/`
 in both Authorized Javascript Origins and Authorized redirect URIs.
-36. Last, do `sudo service apache2 restart ` and the application will be LIVE!
+37. Last, do `sudo service apache2 restart ` and the application will be LIVE!
 
 ## Live Flask Application
 
